@@ -20,10 +20,14 @@ import java.util.List;
  * @Description: TODO
  * @date 2019/1/22 0:47
  */
+@RequestMapping("user")
+//每个方法的路径前面都有一个user 可以抽取出来放到类上 ，spring 会将类上的路径+方法上的路径 作为访问路径
 @RestController
 public class UserController implements Serializable {
 
-    @RequestMapping(value = "/user",method = RequestMethod.GET)
+    //@RequestMapping(value = "/user",method = RequestMethod.GET)
+    //@GetMapping("user")
+    @GetMapping
     public List<User> query(@RequestParam String username){
         //@RequestParam String username  如果请求过来没有username这个参数会返回一个400错误
         System.out.println(username);
@@ -34,49 +38,11 @@ public class UserController implements Serializable {
         list.add(user);
         return list;
     }
-
-    @RequestMapping(value = "/user1",method = RequestMethod.GET)
-    public List<User> query1(User u){
-        //ReflectionToStringBuilder.toString   org.apache.commons.lang3的工具类  可以以字符串的形式打印对象
-        System.out.println(ReflectionToStringBuilder.toString(u,ToStringStyle.MULTI_LINE_STYLE));
-        List<User> list = new ArrayList<User>();
-        User user = new User();
-        list.add(user);
-        list.add(user);
-        list.add(user);
-        return list;
-    }
-
-    @RequestMapping(value = "/user2",method = RequestMethod.GET)
-    public List<User> query2(User u, @PageableDefault(page = 0,size = 10) Pageable pageable){
-        //ReflectionToStringBuilder.toString   org.apache.commons.lang3的工具类  可以以字符串的形式打印对象
-        System.out.println(ReflectionToStringBuilder.toString(u,ToStringStyle.MULTI_LINE_STYLE));
-        List<User> list = new ArrayList<User>();
-        User user = new User();
-        list.add(user);
-        list.add(user);
-        list.add(user);
-        return list;
-    }
-
-    /**
-     * @param id
-     * @return
-     */
-    @RequestMapping("/user3")
-    public User getInfo(String id){
-        System.out.println("=================");
-        System.out.println(id);
-        User u = new User();
-        u.setUsername("tom");
-        return u;
-    }
-
     /**
      * @param idxx
      * @return
      */
-    @RequestMapping("/user4/{id:\\d++}")
+    @GetMapping("{id:\\d++}")
     @JsonView(User.UserSimpleView.class)
     public User getInfo4( @PathVariable(name = "id") String idxx){
         System.out.println("=================");
