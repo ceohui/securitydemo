@@ -6,6 +6,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.web.JsonPath;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -15,6 +16,9 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.io.Serializable;
+import java.util.Date;
+
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 
 @RunWith(SpringRunner.class)
@@ -49,7 +53,7 @@ public class UserControllerTest implements Serializable {
                          .param("password","123456")
                          .contentType(MediaType.APPLICATION_JSON_UTF8)) //用contentType表示具体请求中的媒体类型信息，MediaType.APPLICATION_JSON表示互联网媒体类型的json数据格式
                 .andExpect(MockMvcResultMatchers.status().isOk())     //期望的状态码 200
-                .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(3));////验证length是否为3，jsonPath的使用
+                .andExpect(jsonPath("$.length()").value(3));////验证length是否为3，jsonPath的使用
     }
 
     @Test
@@ -59,8 +63,25 @@ public class UserControllerTest implements Serializable {
                 MockMvcRequestBuilders.get("/user4/1")
                         .contentType(MediaType.APPLICATION_JSON_UTF8)) //用contentType表示具体请求中的媒体类型信息，MediaType.APPLICATION_JSON表示互联网媒体类型的json数据格式
                 .andExpect(MockMvcResultMatchers.status().isOk())     //期望的状态码 200
-                .andExpect(MockMvcResultMatchers.jsonPath("$.username").value("tom"))
+                .andExpect(jsonPath("$.username").value("tom"))
                 .andReturn().getResponse().getContentAsString();       //将返回结果转换为字符串 并 定义 一个变量result接收
+        System.out.println(result);
+    }
+
+    @Test
+    public void whenCreateSuccess() throws Exception {
+        Date date = new Date();
+        System.out.println(date.getTime());
+        //{"username":"tom"}  ，在java 双引号需要转义
+        String content ="{\"username\":\"tom\",\"birthday\":\""+date.getTime() +"\"}";
+        System.out.println(content);
+        String result = mockMvc.perform(MockMvcRequestBuilders.post("/user")
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(content))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(jsonPath("$.id").value("1"))
+                .andReturn().getResponse().getContentAsString();
+
         System.out.println(result);
     }
 }

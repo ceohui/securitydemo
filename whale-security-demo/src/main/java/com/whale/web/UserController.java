@@ -2,6 +2,7 @@ package com.whale.web;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.whale.model.User;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.springframework.data.domain.Pageable;
@@ -9,6 +10,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 import javax.jws.soap.SOAPBinding;
+import javax.validation.Valid;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +26,22 @@ import java.util.List;
 //每个方法的路径前面都有一个user 可以抽取出来放到类上 ，spring 会将类上的路径+方法上的路径 作为访问路径
 @RestController
 public class UserController implements Serializable {
+
+    //当我们的请求路径直接为 “/user” 时 ，如果是get请求就找对应的get方法，如果是post请求就找这个方法
+    //此时我们分别有两个方法没有写映射路径，一个是post 一个是get
+    @PostMapping
+    public User createUser(@Valid @RequestBody User u){
+
+        System.out.println(u.getId());
+        System.out.println(u.getUsername());
+        System.out.println(u.getPassword());
+        System.out.println(u.getBirthday());
+        User user = new User();
+        user.setId(1);
+        return user;
+    }
+
+
 
     //@RequestMapping(value = "/user",method = RequestMethod.GET)
     //@GetMapping("user")
