@@ -70,5 +70,9 @@ public class UserController implements Serializable {
         return u;
     }
 
+    private void test(){
+
+    }
+
 
 }
