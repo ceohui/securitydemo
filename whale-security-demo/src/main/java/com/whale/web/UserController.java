@@ -7,6 +7,8 @@ import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import javax.jws.soap.SOAPBinding;
@@ -70,6 +72,26 @@ public class UserController implements Serializable {
         return u;
     }
 
+
+    @PutMapping("{id:\\d++}")
+    public User updateUser(@Valid @RequestBody User u, BindingResult errors){
+
+        //如果有错误 循环打印
+        if(errors.hasErrors()){
+            errors.getAllErrors().stream().forEach(error-> {
+                FieldError fieldError = (FieldError)error;
+                String message = fieldError.getField()+" "+error.getDefaultMessage();
+                System.out.println(message);
+            });
+        }
+        System.out.println(u.getId());
+        System.out.println(u.getUsername());
+        System.out.println(u.getPassword());
+        System.out.println(u.getBirthday());
+        User user = new User();
+        user.setId(1);
+        return user;
+    }
     private void test(){
 
     }
