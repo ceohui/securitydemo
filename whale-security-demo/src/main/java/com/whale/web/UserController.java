@@ -92,6 +92,11 @@ public class UserController implements Serializable {
         user.setId(1);
         return user;
     }
+
+    @DeleteMapping("{id:\\d++}")
+    public void deleteUser(@PathVariable String id){
+        System.out.println(id);
+    }
     private void test(){
 
     }
