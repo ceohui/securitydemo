@@ -1,4 +1,4 @@
-package com.whale.web;
+package com.whale.web.controller;
 
 import com.whale.exception.UserNotExistException;
 import org.springframework.http.HttpStatus;
