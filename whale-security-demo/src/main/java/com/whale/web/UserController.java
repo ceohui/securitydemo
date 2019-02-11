@@ -32,7 +32,7 @@ public class UserController implements Serializable {
     //当我们的请求路径直接为 “/user” 时 ，如果是get请求就找对应的get方法，如果是post请求就找这个方法
     //此时我们分别有两个方法没有写映射路径，一个是post 一个是get
     @PostMapping
-    public User createUser(@Valid @RequestBody User u){
+    public User createUser(@Valid @RequestBody User u ,BindingResult errors){
 
         System.out.println(u.getId());
         System.out.println(u.getUsername());
@@ -66,10 +66,12 @@ public class UserController implements Serializable {
     @JsonView(User.UserSimpleView.class)
     public User getInfo4( @PathVariable(name = "id") String idxx){
         System.out.println("=================");
-        System.out.println(idxx);
-        User u = new User();
-        u.setUsername("tom");
-        return u;
+
+        throw new RuntimeException("user is not exist !");
+        //System.out.println(idxx);
+        //User u = new User();
+        //u.setUsername("tom");
+        //return u;
     }
 
 
