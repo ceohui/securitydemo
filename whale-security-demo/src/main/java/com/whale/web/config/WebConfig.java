@@ -1,9 +1,13 @@
 package com.whale.web.config;
 
 import com.whale.web.filter.TimeFilter;
+import com.whale.web.interceptor.TimeInterceptor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import javax.servlet.FilterRegistration;
 import java.io.Serializable;
@@ -17,8 +21,17 @@ import java.util.List;
  * @Description: TODO
  * @date 2019/2/11 16:53
  */
+@SuppressWarnings("deprecation")
 @Configuration
-public class WebConfig implements Serializable {
+public class WebConfig extends WebMvcConfigurerAdapter {
+
+    @Autowired
+    private TimeInterceptor timeInterceptor;
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(timeInterceptor);
+    }
 
     @Bean
     public FilterRegistrationBean timeFilter(){

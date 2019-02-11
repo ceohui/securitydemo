@@ -69,11 +69,12 @@ public class UserController implements Serializable {
         System.out.println("=================");
 
         //throw new UserNotExistException(idxx);
+        throw  new RuntimeException("user is not exists");
         //System.out.println(idxx);
-        System.out.println("进入getInfo服务");
-        User u = new User();
-        u.setUsername("tom");
-        return u;
+        //System.out.println("进入getInfo服务");
+        //User u = new User();
+        //u.setUsername("tom");
+        //return u;
     }
 
 
