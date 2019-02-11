@@ -1,6 +1,7 @@
 package com.whale.web;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.whale.exception.UserNotExistException;
 import com.whale.model.User;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
@@ -67,7 +68,7 @@ public class UserController implements Serializable {
     public User getInfo4( @PathVariable(name = "id") String idxx){
         System.out.println("=================");
 
-        throw new RuntimeException("user is not exist !");
+        throw new UserNotExistException(idxx);
         //System.out.println(idxx);
         //User u = new User();
         //u.setUsername("tom");
