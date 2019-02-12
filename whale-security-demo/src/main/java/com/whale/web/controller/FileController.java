@@ -1,14 +1,15 @@
 package com.whale.web.controller;
 
 import com.whale.model.FileInfo;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import jdk.internal.util.xml.impl.Input;
+import org.apache.tomcat.util.http.fileupload.FileUtils;
+import org.apache.tomcat.util.http.fileupload.IOUtils;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.Serializable;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
 import java.util.Date;
 
 /**
@@ -21,6 +22,8 @@ import java.util.Date;
 @RestController
 @RequestMapping("/file")
 public class FileController  {
+
+    private String folder = "D:\\workspace\\whale-security\\whale-security-demo\\src\\main\\java\\com\\whale\\web\\controller";
 
     @PostMapping
     public FileInfo upload(MultipartFile file) throws IOException {
@@ -37,5 +40,26 @@ public class FileController  {
         file.transferTo(localFile);
 
         return  new FileInfo(localFile.getAbsolutePath());
+    }
+
+
+    @GetMapping("{id}")
+    public void download(@PathVariable String id, HttpServletRequest request, HttpServletResponse response){
+        //jdk1.7语法 将流声明在try() 可以自动关闭
+        try(
+            InputStream inputStream = new FileInputStream(new File(folder,id+".txt"));
+            OutputStream outputStream = response.getOutputStream();
+            ) {
+            response.setContentType("application/x-download");
+            response.addHeader("Content-Disposition","attachment;filename=test.txt");
+
+            IOUtils.copy(inputStream,outputStream);//输入流copy到输出流
+
+            outputStream.flush();
+
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 }
