@@ -2,6 +2,8 @@ package com.whale.model;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.whale.validator.MyConstraint;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Past;
@@ -24,6 +26,7 @@ public class User implements Serializable {
 
     @MyConstraint(message = "这是一个validate测试")
     @JsonView(UserSimpleView.class)
+    @ApiModelProperty("用户名称")
     private String username;   //username展示在简单视图
 
     @NotBlank(message = "密码不能为空")

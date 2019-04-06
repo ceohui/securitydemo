@@ -3,6 +3,8 @@ package com.whale.web.controller;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.whale.exception.UserNotExistException;
 import com.whale.model.User;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -33,6 +35,7 @@ public class UserController implements Serializable {
     //当我们的请求路径直接为 “/user” 时 ，如果是get请求就找对应的get方法，如果是post请求就找这个方法
     //此时我们分别有两个方法没有写映射路径，一个是post 一个是get
     @PostMapping
+    @ApiOperation("用户创建")
     public User createUser(@Valid @RequestBody User u ,BindingResult errors){
 
         System.out.println(u.getId());
@@ -65,7 +68,8 @@ public class UserController implements Serializable {
      */
     @GetMapping("{id:\\d++}")
     @JsonView(User.UserSimpleView.class)
-    public User getInfo4( @PathVariable(name = "id") String idxx){
+    @ApiOperation(value = "用户查询服务") //方法的描述
+    public User getInfo4( @PathVariable(name = "id") @ApiParam("用户id") String idxx){
         System.out.println("=================");
 
         //throw new UserNotExistException(idxx);
