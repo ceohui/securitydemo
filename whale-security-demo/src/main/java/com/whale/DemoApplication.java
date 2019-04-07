@@ -17,9 +17,6 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 
 @EnableSwagger2
-@EnableAutoConfiguration(exclude = {
-        org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration.class
-})
 @RestController
 @SpringBootApplication  //这是一个SpringBoot项目
 public class DemoApplication {
