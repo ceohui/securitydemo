@@ -33,7 +33,7 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
         //http.httpBasic()
         http.formLogin()
 //                .loginPage("/login") //指定登录页面的url
-//                .loginProcessingUrl("/authentication/form.do")
+//                .loginProcessingUrl("/authentication/form")
                 .and()
                 .authorizeRequests() //对请求授权
                 .antMatchers("/signIn.html").permitAll() //加一个匹配器 对匹配的路径不进行身份认证
