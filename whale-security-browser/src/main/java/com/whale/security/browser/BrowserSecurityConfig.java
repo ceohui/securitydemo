@@ -32,17 +32,30 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
         //http.formLogin()   //指定身份认证的方式为表单登录
         //http.httpBasic()
         http.formLogin()
-//                .loginPage("/login") //指定登录页面的url
-//                .loginProcessingUrl("/authentication/form")
+                .loginPage("/signIn.html") //指定登录页面的url
+                .loginProcessingUrl("/authentication/form")
+                .permitAll()
                 .and()
                 .authorizeRequests() //对请求授权
                 .antMatchers("/signIn.html").permitAll() //加一个匹配器 对匹配的路径不进行身份认证
                 .anyRequest()        //任何请求
                 .authenticated()    //安全认证
                 .and()
-                .cors().disable();  // .csrf().disable();// 禁用跨站攻击
+                .cors().disable().csrf().disable();// 禁用跨站攻击
                 // 默认都会产生一个hiden标签 里面有安全相关的验证 防止请求伪造 这边我们暂时不需要 可禁用掉
                 //任何请求都必须经过表单验证才能进行访问
+
+       /* http.csrf().disable().cors().disable().headers().disable()
+                .authorizeRequests()
+                .antMatchers("/signIn.html").permitAll() // 配置不需要身份认证的请求地址
+                .anyRequest().authenticated() // 其他所有访问路径需要身份认证
+                .and()
+                .formLogin()
+                .loginPage("/signIn.html") // 指定登录请求地址
+                .loginProcessingUrl("/authentication/form")
+                .permitAll();
+        */
+
 
     }
 }
