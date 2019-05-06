@@ -1,6 +1,7 @@
 package com.whale.security.browser;
 
 import com.sun.org.apache.xpath.internal.operations.And;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -8,6 +9,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 import java.io.Serializable;
 
@@ -22,6 +25,11 @@ import java.io.Serializable;
 @Configuration
 public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
 
+    @Autowired
+    private AuthenticationSuccessHandler whaleAuthenticationSuccessHandler;
+    @Autowired
+    private AuthenticationFailureHandler whaleAuthenctiationFailureHandler;
+
     @Bean
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();//也可以自定义 只要实现PasswordEncoder接口
@@ -34,6 +42,8 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
         http.formLogin()
                 .loginPage("/signIn.html") //指定登录页面的url
                 .loginProcessingUrl("/authentication/form")
+                .successHandler(whaleAuthenticationSuccessHandler)
+                .failureHandler(whaleAuthenctiationFailureHandler)
                 .permitAll()
                 .and()
                 .authorizeRequests() //对请求授权
