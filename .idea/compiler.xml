@@ -12,8 +12,5 @@
         <module name="whale-security-demo" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="whale-security-core" target="1.5" />
-    </bytecodeTargetLevel>
   </component>
 </project>
