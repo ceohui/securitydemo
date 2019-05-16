@@ -1,5 +1,7 @@
 package com.whale.security.core.validate;
 
+import com.whale.security.core.properties.SecurityProperties;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.social.connect.web.HttpSessionSessionStrategy;
 import org.springframework.social.connect.web.SessionStrategy;
 import org.springframework.web.bind.ServletRequestUtils;
@@ -31,20 +33,32 @@ public class ValidateCodeController implements Serializable {
     //spring 操作session的工具类
     private SessionStrategy sessionStrategy = new HttpSessionSessionStrategy();
 
+    @Autowired
+    private SecurityProperties securityProperties;
+
     @RequestMapping("/code/image")
     private void createCode(HttpServletRequest request, HttpServletResponse response) throws IOException {
         //1根据请求中的随机数生成图片
-        ImageCode imageCode = createImageCode(request);
+//        ImageCode imageCode = createImageCode(request);
+        ImageCode imageCode = createImageCode(new ServletWebRequest(request));
         //2将随机数放到session中
         sessionStrategy.setAttribute(new ServletWebRequest(request),SESSION_KEY,imageCode);
         //3将生成的图片写到接口的响应中
         ImageIO.write(imageCode.getImage(),"jpeg",response.getOutputStream());
     }
 
-    private ImageCode createImageCode(HttpServletRequest request) {
+    /**
+     *
+     * @param  request(HttpServletRequest)
+     * @return
+     */
+    private ImageCode createImageCode(ServletWebRequest request) {
         //生成一个图片对象
-        int width = 67;
-        int height =23;
+//        int width = 67;
+        int width = ServletRequestUtils.getIntParameter(request.getRequest(),"width",securityProperties.getCode().getImage().getWidth());
+//        int height =23;
+        int height = ServletRequestUtils.getIntParameter(request.getRequest(),"height",securityProperties.getCode().getImage().getHeight());
+
         BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 
         Graphics g = image.getGraphics();
@@ -65,7 +79,9 @@ public class ValidateCodeController implements Serializable {
 
         //生成四位随机数 写入图片
         String sRand = "";
-        for (int i = 0; i <4; i++) {
+//        for (int i = 0; i <4; i++) {
+//        验证码的长度不应该在请求中配置
+        for (int i = 0; i <securityProperties.getCode().getImage().getLength(); i++) {
             String rand = String.valueOf(random.nextInt(10));
             sRand += rand;
             g.setColor(new Color(20 + random.nextInt(110), 20 + random.nextInt(110), 20 + random.nextInt(110)));
@@ -74,7 +90,8 @@ public class ValidateCodeController implements Serializable {
 
         g.dispose();
 
-        return new ImageCode(image, sRand, 60);
+//        return new ImageCode(image, sRand, 60);
+        return new ImageCode(image, sRand, securityProperties.getCode().getImage().getExpireIn());
 
 
 
