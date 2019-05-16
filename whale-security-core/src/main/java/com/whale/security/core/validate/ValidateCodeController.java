@@ -1,6 +1,7 @@
 package com.whale.security.core.validate;
 
 import com.whale.security.core.properties.SecurityProperties;
+import org.apache.commons.lang3.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.social.connect.web.HttpSessionSessionStrategy;
 import org.springframework.social.connect.web.SessionStrategy;
@@ -36,11 +37,15 @@ public class ValidateCodeController implements Serializable {
     @Autowired
     private SecurityProperties securityProperties;
 
+    @Autowired
+    private ValidateCodeGenerator imageCodeGenerator;
+
     @RequestMapping("/code/image")
     private void createCode(HttpServletRequest request, HttpServletResponse response) throws IOException {
         //1根据请求中的随机数生成图片
 //        ImageCode imageCode = createImageCode(request);
-        ImageCode imageCode = createImageCode(new ServletWebRequest(request));
+//        ImageCode imageCode = createImageCode(new ServletWebRequest(request));
+        ImageCode imageCode = imageCodeGenerator.generate(new ServletWebRequest(request));
         //2将随机数放到session中
         sessionStrategy.setAttribute(new ServletWebRequest(request),SESSION_KEY,imageCode);
         //3将生成的图片写到接口的响应中
@@ -52,7 +57,7 @@ public class ValidateCodeController implements Serializable {
      * @param  request(HttpServletRequest)
      * @return
      */
-    private ImageCode createImageCode(ServletWebRequest request) {
+   /* private ImageCode createImageCode(ServletWebRequest request) {
         //生成一个图片对象
 //        int width = 67;
         int width = ServletRequestUtils.getIntParameter(request.getRequest(),"width",securityProperties.getCode().getImage().getWidth());
@@ -97,13 +102,13 @@ public class ValidateCodeController implements Serializable {
 
     }
 
-    /**
+    *//**
      * 生成随机背景条纹
      *
      * @param fc
      * @param bc
      * @return
-     */
+     *//*
     private Color getRandColor(int fc, int bc) {
         Random random = new Random();
         if (fc > 255) {
@@ -116,5 +121,5 @@ public class ValidateCodeController implements Serializable {
         int g = fc + random.nextInt(bc - fc);
         int b = fc + random.nextInt(bc - fc);
         return new Color(r, g, b);
-    }
+    }*/
 }
