@@ -13,7 +13,7 @@ import org.springframework.web.context.request.ServletWebRequest;
  * @author zhailiang
  *
  */
-@Component("imageCodeGenerator")
+//@Component("imageCodeGenerator")
 public class DemoImageCodeGenerator implements ValidateCodeGenerator {
 
 	@Override
