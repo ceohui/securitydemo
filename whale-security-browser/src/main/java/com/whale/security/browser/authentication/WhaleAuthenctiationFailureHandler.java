@@ -4,6 +4,7 @@
 package com.whale.security.browser.authentication;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.whale.security.browser.support.SimpleResponse;
 import com.whale.security.core.properties.LoginType;
 import com.whale.security.core.properties.SecurityProperties;
 import org.slf4j.Logger;
@@ -39,7 +40,8 @@ public class WhaleAuthenctiationFailureHandler extends SimpleUrlAuthenticationFa
 		if(LoginType.JSON.equals(securityProperties.getBrowser().getLoginType())) {
 			httpServletResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			httpServletResponse.setContentType("application/json;charset=UTF-8");
-			httpServletResponse.getWriter().write(objectMapper.writeValueAsString(authenticationException));
+//			httpServletResponse.getWriter().write(objectMapper.writeValueAsString(authenticationException));//打印的信息太多 简化如下
+			httpServletResponse.getWriter().write(objectMapper.writeValueAsString(new SimpleResponse(authenticationException.getMessage())));
 		}else {
 			super.onAuthenticationFailure(httpServletRequest,httpServletResponse,authenticationException);
 		}

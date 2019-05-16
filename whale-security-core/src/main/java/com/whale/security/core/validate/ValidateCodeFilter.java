@@ -49,6 +49,7 @@ public class ValidateCodeFilter extends OncePerRequestFilter {
             }catch (ValidateCodeException e){
                 authenticationFailureHandler.onAuthenticationFailure(httpServletRequest,httpServletResponse,e);
 
+                return;//失败后直接返回，不再走下面的过滤器
             }
 
         }

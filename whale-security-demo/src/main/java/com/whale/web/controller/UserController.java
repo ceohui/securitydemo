@@ -10,6 +10,11 @@ import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
@@ -31,6 +36,25 @@ import java.util.List;
 //每个方法的路径前面都有一个user 可以抽取出来放到类上 ，spring 会将类上的路径+方法上的路径 作为访问路径
 @RestController
 public class UserController implements Serializable {
+
+
+    @GetMapping("/me")
+    public Object getCurrentUser(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return  authentication;
+    }
+
+    @GetMapping("/me1")
+    public Object getCurrentUser1(Authentication authentication ){
+        //spring 会自动找到Authentication类型的数据注入
+        return  authentication;
+    }
+
+    @GetMapping("/me2")
+    public Object getCurrentUser2(@AuthenticationPrincipal UserDetails user){
+        return user;
+    }
+
 
     //当我们的请求路径直接为 “/user” 时 ，如果是get请求就找对应的get方法，如果是post请求就找这个方法
     //此时我们分别有两个方法没有写映射路径，一个是post 一个是get
