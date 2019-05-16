@@ -1,10 +1,13 @@
 package com.whale.security.core.validate;
 
+import com.whale.security.core.properties.SecurityProperties;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.social.connect.web.HttpSessionSessionStrategy;
 import org.springframework.social.connect.web.SessionStrategy;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.context.request.ServletWebRequest;
@@ -16,6 +19,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author ljy
@@ -28,7 +33,8 @@ import java.io.Serializable;
 /**
  * 继承spring中的OncePerRequestFilter，确保每次请求调用一次过滤器
  */
-public class ValidateCodeFilter extends OncePerRequestFilter {
+//InitializingBean 实现此接口中的 afterPropertiesSet 初始化方法在其中初始化图片验证码拦截路径
+public class ValidateCodeFilter extends OncePerRequestFilter implements InitializingBean {
 
     private AuthenticationFailureHandler authenticationFailureHandler;
 
@@ -38,10 +44,46 @@ public class ValidateCodeFilter extends OncePerRequestFilter {
 
     private SessionStrategy sessionStrategy = new HttpSessionSessionStrategy();
 
+    //验证码路径，需要初始化
+    private Set<String> urls = new HashSet<>();
+
+    //配置
+    private SecurityProperties securityProperties;
+
+    //路径正则匹配工具
+    private AntPathMatcher pathMatcher = new AntPathMatcher();
+
+    @Override
+    public void afterPropertiesSet() throws ServletException {
+        super.afterPropertiesSet();
+
+        String[] configUrls = StringUtils.splitByWholeSeparatorPreserveAllTokens(securityProperties.getCode().getImage().getUrl(),",");
+        for (String url : configUrls) {
+            urls.add(url);
+        }
+        //这个路径是默认的
+        urls.add("/authentication/form");
+
+    }
+
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
-        if(StringUtils.equals("/authentication/form",httpServletRequest.getRequestURI())
-                && StringUtils.equalsAnyIgnoreCase(httpServletRequest.getMethod(),"post")){
+
+        System.out.println(httpServletRequest.getRequestURI());
+        System.out.println(httpServletRequest.getRequestURL());
+
+        //如果请求路径满足匹配模式 则需要验证码
+        boolean action = false;
+        for (String url : urls) {
+            if(pathMatcher.match(url,httpServletRequest.getRequestURI())){
+                action = true;
+            }
+
+        }
+
+//        if(StringUtils.equals("/authentication/form",httpServletRequest.getRequestURI())
+//                && StringUtils.equalsAnyIgnoreCase(httpServletRequest.getMethod(),"post")){
+        if(action){
 
             try {
                 validate(new ServletWebRequest(httpServletRequest));
@@ -77,6 +119,15 @@ public class ValidateCodeFilter extends OncePerRequestFilter {
 
         sessionStrategy.removeAttribute(request,ValidateCodeController.SESSION_KEY);
 
+    }
+
+
+    public SecurityProperties getSecurityProperties() {
+        return securityProperties;
+    }
+
+    public void setSecurityProperties(SecurityProperties securityProperties) {
+        this.securityProperties = securityProperties;
     }
 
 
