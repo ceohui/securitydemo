@@ -5,17 +5,22 @@ import com.whale.security.core.properties.SecurityProperties;
 import com.whale.security.core.validate.ValidateCodeController;
 import com.whale.security.core.validate.ValidateCodeFilter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 
+import javax.sql.DataSource;
 import java.io.Serializable;
 
 /**
@@ -37,9 +42,26 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private SecurityProperties securityProperties;
 
+    @Autowired
+    private DataSource dataSource;
+
+    @Qualifier("myUserDetailsService")
+    @Autowired
+    private UserDetailsService userDetailsService;
+
     @Bean
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();//也可以自定义 只要实现PasswordEncoder接口
+    }
+
+    @Bean
+    public PersistentTokenRepository persistentTokenRepository(){
+        JdbcTokenRepositoryImpl tokenRepository = new JdbcTokenRepositoryImpl();
+        tokenRepository.setDataSource(dataSource);
+        //tokenRepository.setCreateTableOnStartup(true);
+        //启动时建立这张表persistent_logins，也可以吧创建表语句拿去手动执行
+        //只能执行一次，第二次需要关掉，否则报错MySQLSyntaxErrorException: Table 'persistent_logins' already exists
+        return tokenRepository;
     }
 
     @Override
@@ -63,6 +85,14 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
                 .successHandler(whaleAuthenticationSuccessHandler)
                 .failureHandler(whaleAuthenctiationFailureHandler)
                 .permitAll()
+                .and()
+
+            .rememberMe()
+                .tokenRepository(persistentTokenRepository())
+                .tokenValiditySeconds(securityProperties.getBrowser().getRememberMeSecodes())
+                .userDetailsService(userDetailsService)
+
+
                 .and()
                 .authorizeRequests() //对请求授权
 //                .antMatchers("/signIn.html","/code/image").permitAll() //加一个匹配器 对匹配的路径不进行身份认证

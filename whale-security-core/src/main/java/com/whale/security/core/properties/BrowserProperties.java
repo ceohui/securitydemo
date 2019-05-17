@@ -15,6 +15,8 @@ public class  BrowserProperties {
 
 	private LoginType loginType = LoginType.JSON;
 
+	private int rememberMeSecodes = 3600;//秒 1小时
+
 	public String getLoginPage() {
 		return loginPage;
 	}
@@ -29,5 +31,13 @@ public class  BrowserProperties {
 
 	public void setLoginType(LoginType loginType) {
 		this.loginType = loginType;
+	}
+
+	public int getRememberMeSecodes() {
+		return rememberMeSecodes;
+	}
+
+	public void setRememberMeSecodes(int rememberMeSecodes) {
+		this.rememberMeSecodes = rememberMeSecodes;
 	}
 }
