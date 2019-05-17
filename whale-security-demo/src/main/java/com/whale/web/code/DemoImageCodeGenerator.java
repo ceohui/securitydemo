@@ -3,9 +3,8 @@
  */
 package com.whale.web.code;
 
-import com.whale.security.core.validate.ImageCode;
 import com.whale.security.core.validate.ValidateCodeGenerator;
-import org.springframework.stereotype.Component;
+import com.whale.security.core.validate.image.ImageCode;
 import org.springframework.web.context.request.ServletWebRequest;
 
 

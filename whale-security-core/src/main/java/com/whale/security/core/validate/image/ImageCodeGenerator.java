@@ -1,18 +1,17 @@
 /**
  * 
  */
-package com.whale.security.core.validate;
-
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.image.BufferedImage;
-import java.util.Random;
+package com.whale.security.core.validate.image;
 
 import com.whale.security.core.properties.SecurityProperties;
+import com.whale.security.core.validate.ValidateCodeGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.context.request.ServletWebRequest;
+
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.util.Random;
 
 
 /**

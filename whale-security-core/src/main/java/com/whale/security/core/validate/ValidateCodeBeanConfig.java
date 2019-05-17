@@ -4,6 +4,7 @@
 package com.whale.security.core.validate;
 
 import com.whale.security.core.properties.SecurityProperties;
+import com.whale.security.core.validate.image.ImageCodeGenerator;
 import com.whale.security.core.validate.sms.DefaultSmsCodeSender;
 import com.whale.security.core.validate.sms.SmsCodeSender;
 import org.springframework.beans.factory.annotation.Autowired;

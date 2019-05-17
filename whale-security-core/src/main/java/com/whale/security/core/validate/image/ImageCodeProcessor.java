@@ -1,13 +1,13 @@
 /**
  * 
  */
-package com.whale.security.core.validate;
-
-import javax.imageio.ImageIO;
+package com.whale.security.core.validate.image;
 
 import com.whale.security.core.validate.impl.AbstractValidateCodeProcessor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.ServletWebRequest;
+
+import javax.imageio.ImageIO;
 
 
 /**

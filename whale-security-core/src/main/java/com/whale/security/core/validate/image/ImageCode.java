@@ -1,4 +1,6 @@
-package com.whale.security.core.validate;
+package com.whale.security.core.validate.image;
+
+import com.whale.security.core.validate.ValidateCode;
 
 import java.awt.image.BufferedImage;
 import java.time.LocalDateTime;
@@ -10,7 +12,7 @@ import java.time.LocalDateTime;
  * @Description: TODO
  * @date 2019/5/6 0006 22:53
  */
-public class ImageCode extends ValidateCode  {
+public class ImageCode extends ValidateCode {
     /**
      * 一个图片验证码包含三个信息
      */
