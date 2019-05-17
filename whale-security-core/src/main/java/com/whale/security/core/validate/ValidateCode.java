@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
  * @Description: TODO
  * @date 2019/5/6 0006 22:53
  */
-public class SmsCode {
+public class ValidateCode {
     /**
      * 一个图片验证码包含三个信息
      */
@@ -21,16 +21,15 @@ public class SmsCode {
 
     /**
      *
-     * @param image
      * @param code
      * @param expireIn 多少秒过期
      */
-    public SmsCode(BufferedImage image, String code, int expireIn) {
+    public ValidateCode(String code, int expireIn) {
         this.code = code;
         this.expireTime = LocalDateTime.now().plusSeconds(expireIn);
     }
 
-    public SmsCode(BufferedImage image, String code, LocalDateTime expireTime) {
+    public ValidateCode(String code, LocalDateTime expireTime) {
         this.code = code;
         this.expireTime = expireTime;
     }
