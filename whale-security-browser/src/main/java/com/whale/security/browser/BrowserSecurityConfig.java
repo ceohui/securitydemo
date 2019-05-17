@@ -1,7 +1,9 @@
 package com.whale.security.browser;
 
 import com.sun.org.apache.xpath.internal.operations.And;
+import com.whale.security.core.authentication.mobile.SmsCodeAuthenticationSecurityConfig;
 import com.whale.security.core.properties.SecurityProperties;
+import com.whale.security.core.validate.SmsCodeFilter;
 import com.whale.security.core.validate.ValidateCodeController;
 import com.whale.security.core.validate.ValidateCodeFilter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +51,9 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserDetailsService userDetailsService;
 
+    @Autowired
+    private SmsCodeAuthenticationSecurityConfig smsCodeAuthenticationSecurityConfig;
+
     @Bean
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();//也可以自定义 只要实现PasswordEncoder接口
@@ -76,7 +81,15 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
         validateCodeFilter.afterPropertiesSet();
 
 
-        http.addFilterBefore(validateCodeFilter,UsernamePasswordAuthenticationFilter.class)
+        SmsCodeFilter smsCodeFilter = new SmsCodeFilter();
+        smsCodeFilter.setAuthenticationFailureHandler(whaleAuthenctiationFailureHandler);//设置错误过滤器
+
+        smsCodeFilter.setSecurityProperties(securityProperties);
+        smsCodeFilter.afterPropertiesSet();
+
+
+        http.addFilterBefore(smsCodeFilter,UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(validateCodeFilter,UsernamePasswordAuthenticationFilter.class)
                 .formLogin()
 //                .loginPage("/signIn.html") //指定登录页面的url
 //                .loginPage("/anthentication/require") //指定登录页面的url
@@ -100,7 +113,11 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest()        //任何请求
                 .authenticated()    //安全认证
                 .and()
-                .cors().disable().csrf().disable();// 禁用跨站攻击
+                .cors().disable().csrf().disable()// 禁用跨站攻击
+
+        .apply(smsCodeAuthenticationSecurityConfig);
+
+
                 // 默认都会产生一个hiden标签 里面有安全相关的验证 防止请求伪造 这边我们暂时不需要 可禁用掉
                 //任何请求都必须经过表单验证才能进行访问
 
