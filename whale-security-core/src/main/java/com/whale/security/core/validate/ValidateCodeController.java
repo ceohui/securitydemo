@@ -34,7 +34,7 @@ import java.util.Random;
 @RestController
 public class ValidateCodeController implements Serializable {
 
-    public static  final  String SESSION_KEY ="SESSION_KEY_IMAGE_CODE";//key
+//    public static  final  String SESSION_KEY ="SESSION_KEY_IMAGE_CODE";//key
 
     @Autowired
     private Map<String, ValidateCodeProcessor> validateCodeProcessors;
