@@ -58,8 +58,10 @@ public class ValidateCodeFilter extends OncePerRequestFilter implements Initiali
         super.afterPropertiesSet();
 
         String[] configUrls = StringUtils.splitByWholeSeparatorPreserveAllTokens(securityProperties.getCode().getImage().getUrl(),",");
-        for (String url : configUrls) {
-            urls.add(url);
+        if(configUrls!=null){
+            for (String url : configUrls) {
+                urls.add(url);
+            }
         }
         //这个路径是默认的
         urls.add("/authentication/form");
