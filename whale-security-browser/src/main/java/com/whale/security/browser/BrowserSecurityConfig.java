@@ -96,7 +96,7 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests() //对请求授权
 //                .antMatchers("/signIn.html","/code/image").permitAll() //加一个匹配器 对匹配的路径不进行身份认证
-                .antMatchers(securityProperties.getBrowser().getLoginPage(),"/code/image").permitAll() //加一个匹配器 对匹配的路径不进行身份认证
+                .antMatchers(securityProperties.getBrowser().getLoginPage(),"/code/*").permitAll() //加一个匹配器 对匹配的路径不进行身份认证
                 .anyRequest()        //任何请求
                 .authenticated()    //安全认证
                 .and()

@@ -1,10 +1,12 @@
 package com.whale.security.core.validate;
 
 import com.whale.security.core.properties.SecurityProperties;
+import com.whale.security.core.validate.sms.SmsCodeSender;
 import org.apache.commons.lang3.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.social.connect.web.HttpSessionSessionStrategy;
 import org.springframework.social.connect.web.SessionStrategy;
+import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -40,16 +42,34 @@ public class ValidateCodeController implements Serializable {
     @Autowired
     private ValidateCodeGenerator imageCodeGenerator;
 
+    @Autowired
+    private ValidateCodeGenerator smsCodeGenerator;
+
+    @Autowired
+    private SmsCodeSender smsCodeSender;//注入手机验证码发送器
+
     @RequestMapping("/code/image")
     private void createCode(HttpServletRequest request, HttpServletResponse response) throws IOException {
         //1根据请求中的随机数生成图片
 //        ImageCode imageCode = createImageCode(request);
 //        ImageCode imageCode = createImageCode(new ServletWebRequest(request));
-        ImageCode imageCode = imageCodeGenerator.generate(new ServletWebRequest(request));
+        ImageCode imageCode = (ImageCode) imageCodeGenerator.generate(new ServletWebRequest(request));
         //2将随机数放到session中
         sessionStrategy.setAttribute(new ServletWebRequest(request),SESSION_KEY,imageCode);
         //3将生成的图片写到接口的响应中
         ImageIO.write(imageCode.getImage(),"jpeg",response.getOutputStream());
+    }
+
+    @RequestMapping("/code/sms")
+    private void createSms(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletRequestBindingException {
+        //1根据请求中的随机数生成图片
+        ValidateCode smsCode = smsCodeGenerator.generate(new ServletWebRequest(request));
+        //2将随机数放到session中
+        sessionStrategy.setAttribute(new ServletWebRequest(request),SESSION_KEY,smsCode);
+        //3、这块应该由短信服务商将我们的短信发送出去，我们需要封装一个短信验证码发送的接口
+        String mobile = ServletRequestUtils.getRequiredStringParameter(request,"mobile");
+        smsCodeSender.send(mobile,smsCode.getCode());
+
     }
 
     /**
