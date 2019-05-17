@@ -1,5 +1,6 @@
 package com.whale.security.core.validate;
 
+import com.whale.security.core.properties.SecurityConstants;
 import com.whale.security.core.properties.SecurityProperties;
 import com.whale.security.core.validate.sms.SmsCodeSender;
 import org.apache.commons.lang3.Validate;
@@ -36,8 +37,13 @@ public class ValidateCodeController implements Serializable {
 
 //    public static  final  String SESSION_KEY ="SESSION_KEY_IMAGE_CODE";//key
 
-    @Autowired
+   /* @Autowired
     private Map<String, ValidateCodeProcessor> validateCodeProcessors;
+
+*/
+
+    @Autowired
+    private ValidateCodeProcessorHolder validateCodeProcessorHolder;
 
     /**
      * 创建验证码，根据验证码类型不同，调用不同的 {@link ValidateCodeProcessor}接口实现
@@ -47,10 +53,11 @@ public class ValidateCodeController implements Serializable {
      * @param type
      * @throws Exception
      */
-    @GetMapping("/code/{type}")
+//    @GetMapping("/code/{type}")
+    @GetMapping(SecurityConstants.DEFAULT_VALIDATE_CODE_URL_PREFIX + "/{type}")
     public void createCode(HttpServletRequest request, HttpServletResponse response, @PathVariable String type)
             throws Exception {
-        validateCodeProcessors.get(type+"CodeProcessor").create(new ServletWebRequest(request,response));
+        validateCodeProcessorHolder.findValidateCodeProcessor(type).create(new ServletWebRequest(request, response));
         }
 
 

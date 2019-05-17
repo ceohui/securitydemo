@@ -103,6 +103,10 @@ public class SmsCodeFilter extends OncePerRequestFilter implements InitializingB
         filterChain.doFilter(httpServletRequest,httpServletResponse);
     }
 
+    /**
+     * @param request
+     * @throws ServletRequestBindingException
+     */
     private void validate(ServletWebRequest request) throws ServletRequestBindingException {
 //        ImageCode codeInSession  = (ImageCode) sessionStrategy.getAttribute(request, ValidateCodeController.SESSION_KEY);
         ValidateCode codeInSession  = (ValidateCode)sessionStrategy.getAttribute(request, ValidateCodeProcessor.SESSION_KEY_PREFIX+"SMS");

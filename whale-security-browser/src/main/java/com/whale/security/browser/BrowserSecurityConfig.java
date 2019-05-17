@@ -1,11 +1,14 @@
 package com.whale.security.browser;
 
 import com.sun.org.apache.xpath.internal.operations.And;
+import com.whale.security.core.authentication.AbstractChannelSecurityConfig;
 import com.whale.security.core.authentication.mobile.SmsCodeAuthenticationSecurityConfig;
+import com.whale.security.core.properties.SecurityConstants;
 import com.whale.security.core.properties.SecurityProperties;
 import com.whale.security.core.validate.SmsCodeFilter;
 import com.whale.security.core.validate.ValidateCodeController;
 import com.whale.security.core.validate.ValidateCodeFilter;
+import com.whale.security.core.validate.ValidateCodeSecurityConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -34,7 +37,7 @@ import java.io.Serializable;
  */
 
 @Configuration
-public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
+public class BrowserSecurityConfig extends AbstractChannelSecurityConfig {
 
     @Autowired
     private AuthenticationSuccessHandler whaleAuthenticationSuccessHandler;
@@ -54,6 +57,9 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private SmsCodeAuthenticationSecurityConfig smsCodeAuthenticationSecurityConfig;
 
+    @Autowired
+    private ValidateCodeSecurityConfig validateCodeSecurityConfig;
+
     @Bean
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();//也可以自定义 只要实现PasswordEncoder接口
@@ -71,10 +77,45 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+
+
+
+
+
+        applyPasswordAuthenticationConfig(http);
+
+        http.apply(validateCodeSecurityConfig)
+                .and()
+             .apply(smsCodeAuthenticationSecurityConfig)
+                .and()
+                .rememberMe()
+                .tokenRepository(persistentTokenRepository())
+                .tokenValiditySeconds(securityProperties.getBrowser().getRememberMeSecodes())
+                .userDetailsService(userDetailsService)
+                .and()
+                .authorizeRequests()
+                .antMatchers(
+                        SecurityConstants.DEFAULT_UNAUTHENTICATION_URL,
+                        SecurityConstants.DEFAULT_LOGIN_PROCESSING_URL_MOBILE,
+                        securityProperties.getBrowser().getLoginPage(),
+                        SecurityConstants.DEFAULT_VALIDATE_CODE_URL_PREFIX+"/*")
+                .permitAll()
+                .anyRequest()
+                .authenticated()
+                .and()
+                .cors().disable().csrf().disable();// 禁用跨站攻击
+
+
+
+
+
+
+
+
         //http.formLogin()   //指定身份认证的方式为表单登录
         //http.httpBasic()
 
-        ValidateCodeFilter validateCodeFilter = new ValidateCodeFilter();
+     /*   ValidateCodeFilter validateCodeFilter = new ValidateCodeFilter();
         validateCodeFilter.setAuthenticationFailureHandler(whaleAuthenctiationFailureHandler);//设置错误过滤器
 
         validateCodeFilter.setSecurityProperties(securityProperties);
@@ -115,7 +156,7 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .cors().disable().csrf().disable()// 禁用跨站攻击
 
-        .apply(smsCodeAuthenticationSecurityConfig);
+        .apply(smsCodeAuthenticationSecurityConfig);*/
 
 
                 // 默认都会产生一个hiden标签 里面有安全相关的验证 防止请求伪造 这边我们暂时不需要 可禁用掉

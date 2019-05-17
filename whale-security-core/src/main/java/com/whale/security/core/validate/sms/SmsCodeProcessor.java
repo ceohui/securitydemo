@@ -18,8 +18,9 @@ import javax.servlet.ServletRequest;
  * 
  * @author zhailiang
  *
+ * ValidateCodeProcessor.class.getSimpleName();  ValidateCodeProcessor
  */
-@Component("smsCodeProcessor")
+@Component("smsValidateCodeProcessor")
 public class SmsCodeProcessor extends AbstractValidateCodeProcessor<ValidateCode> {
 
 	/**
