@@ -17,6 +17,7 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+import org.springframework.social.security.SpringSocialConfigurer;
 
 import javax.sql.DataSource;
 
@@ -52,6 +53,12 @@ public class BrowserSecurityConfig extends AbstractChannelSecurityConfig {
     @Autowired
     private ValidateCodeSecurityConfig validateCodeSecurityConfig;
 
+    /**
+     * 给当前过滤链加一个过滤器，它会拦截一些请求，在收到这些请求时去引导用户社交登录
+     */
+    @Autowired
+    private SpringSocialConfigurer whaleSocialConfigurer;
+
     @Bean
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();//也可以自定义 只要实现PasswordEncoder接口
@@ -79,6 +86,8 @@ public class BrowserSecurityConfig extends AbstractChannelSecurityConfig {
         http.apply(validateCodeSecurityConfig)
                 .and()
              .apply(smsCodeAuthenticationSecurityConfig)
+                .and()
+             .apply(whaleSocialConfigurer)
                 .and()
                 .rememberMe()
                 .tokenRepository(persistentTokenRepository())

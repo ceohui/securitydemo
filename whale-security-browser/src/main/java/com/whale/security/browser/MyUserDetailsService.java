@@ -9,6 +9,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.social.security.SocialUser;
+import org.springframework.social.security.SocialUserDetails;
+import org.springframework.social.security.SocialUserDetailsService;
 import org.springframework.stereotype.Component;
 
 /**
@@ -19,7 +22,7 @@ import org.springframework.stereotype.Component;
  * @date 2019/4/6 0006 20:05
  */
 @Component
-public class MyUserDetailsService implements UserDetailsService {
+public class MyUserDetailsService implements UserDetailsService ,SocialUserDetailsService {
     // 这里注入dao 层 用于查询数据库
 
     Logger logger = LoggerFactory.getLogger(getClass());
@@ -38,5 +41,30 @@ public class MyUserDetailsService implements UserDetailsService {
                 AuthorityUtils.commaSeparatedStringToAuthorityList("admin"));//第三个参数是做授权的
 
         return admin;
+    }
+
+    /**
+     * @param userId the user ID used to lookup the user details
+     * @return the SocialUserDetails requested
+     * @see UserDetailsService#loadUserByUsername(String)
+     * userId是用户的唯一标识
+     */
+    public SocialUserDetails loadUserByUserId(String userId) throws UsernameNotFoundException {
+        logger.info("设计登录用户id"+userId);
+        return build(userId);
+    }
+
+    private SocialUserDetails build(String userId) {
+        //根据用户名查找用户信息
+        //根据查找到的用户信息判断是否冻结
+        String password = passwordEncoder.encode("123456");
+        logger.info("数据库密码是："+password);
+
+        SocialUser admin = new SocialUser(userId, password,
+                true, true, true, true,
+                AuthorityUtils.commaSeparatedStringToAuthorityList("admin"));//第三个参数是做授权的
+        return admin;
+
+
     }
 }

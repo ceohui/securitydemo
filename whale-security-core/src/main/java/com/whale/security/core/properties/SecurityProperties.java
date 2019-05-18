@@ -17,6 +17,8 @@ public class SecurityProperties {
 	//验证码配置
 	private ValidateCodeProperties code = new ValidateCodeProperties();
 
+	private MySocialProperties social = new MySocialProperties();
+
 
 	public BrowserProperties getBrowser() {
 		return browser;
@@ -32,5 +34,13 @@ public class SecurityProperties {
 
 	public void setCode(ValidateCodeProperties code) {
 		this.code = code;
+	}
+
+	public MySocialProperties getSocial() {
+		return social;
+	}
+
+	public void setSocial(MySocialProperties social) {
+		this.social = social;
 	}
 }
