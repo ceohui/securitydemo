@@ -4,6 +4,7 @@
 package com.whale.security.browser;
 
 import com.whale.security.browser.support.SimpleResponse;
+import com.whale.security.core.properties.SecurityConstants;
 import com.whale.security.core.properties.SecurityProperties;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -47,12 +48,38 @@ public class BrowserSecurityController {
      * @throws IOException
      */
     //                authentication/require
-    @RequestMapping("/anthentication/require")
-    @ResponseStatus(code = HttpStatus.UNAUTHORIZED)//401未授权状态码
+//    @RequestMapping("/anthentication/require")
+//    @ResponseStatus(code = HttpStatus.UNAUTHORIZED)//401未授权状态码
+//    public SimpleResponse requireAuthentication(HttpServletRequest request, HttpServletResponse response)
+//            throws IOException {
+//
+//        //拿到引发跳转的这个请求
+//        SavedRequest savedRequest = requestCache.getRequest(request, response);
+//
+//        if (savedRequest != null) {
+//            String targetUrl = savedRequest.getRedirectUrl();
+//            logger.info("引发跳转的请求是:" + targetUrl);
+//            if (StringUtils.endsWithIgnoreCase(targetUrl, ".html")) {
+//                redirectStrategy.sendRedirect(request, response, securityProperties.getBrowser().getLoginPage());
+//            }
+//        }
+//
+//        return new SimpleResponse("访问的服务需要身份认证，请引导用户到登录页");
+//    }
+
+    /**
+     * 当需要身份认证时，跳转到这里
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping(SecurityConstants.DEFAULT_UNAUTHENTICATION_URL)
+    @ResponseStatus(code = HttpStatus.UNAUTHORIZED)
     public SimpleResponse requireAuthentication(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
 
-        //拿到引发跳转的这个请求
         SavedRequest savedRequest = requestCache.getRequest(request, response);
 
         if (savedRequest != null) {

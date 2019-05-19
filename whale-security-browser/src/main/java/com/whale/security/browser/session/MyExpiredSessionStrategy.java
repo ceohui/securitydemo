@@ -16,6 +16,7 @@ import java.io.IOException;
 public class MyExpiredSessionStrategy implements SessionInformationExpiredStrategy {
 
 
+	@Override
 	public void onExpiredSessionDetected(SessionInformationExpiredEvent event) throws IOException, ServletException {
 		event.getResponse().setContentType("application/json;charset=UTF-8");
 		event.getResponse().getWriter().write("并发登录！");
