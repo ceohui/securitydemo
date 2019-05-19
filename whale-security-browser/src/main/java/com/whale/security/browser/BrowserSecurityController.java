@@ -3,15 +3,8 @@
  */
 package com.whale.security.browser;
 
-import java.io.IOException;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import com.whale.security.browser.support.SimpleResponse;
-import com.whale.security.core.SecurityCoreConfig;
 import com.whale.security.core.properties.SecurityProperties;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,13 +15,13 @@ import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.savedrequest.RequestCache;
 import org.springframework.security.web.savedrequest.SavedRequest;
-import org.springframework.social.connect.Connection;
-import org.springframework.social.connect.web.ProviderSignInUtils;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.context.request.ServletWebRequest;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 /**
  * @author zhailiang
@@ -53,6 +46,7 @@ public class BrowserSecurityController {
      * @return
      * @throws IOException
      */
+    //                authentication/require
     @RequestMapping("/anthentication/require")
     @ResponseStatus(code = HttpStatus.UNAUTHORIZED)//401未授权状态码
     public SimpleResponse requireAuthentication(HttpServletRequest request, HttpServletResponse response)
@@ -71,6 +65,15 @@ public class BrowserSecurityController {
 
         return new SimpleResponse("访问的服务需要身份认证，请引导用户到登录页");
     }
+
+    @RequestMapping("/session/invalid")
+    @ResponseStatus(code = HttpStatus.UNAUTHORIZED)//401未授权状态码
+    public SimpleResponse sessionInvalid(HttpServletRequest request, HttpServletResponse response){
+        String message = "session失效";
+        return  new SimpleResponse(message);
+    }
+
+
 
 
 }
