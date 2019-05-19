@@ -1,5 +1,6 @@
 package com.whale.security.browser;
 
+import com.whale.security.browser.session.MyExpiredSessionStrategy;
 import com.whale.security.core.authentication.AbstractChannelSecurityConfig;
 import com.whale.security.core.authentication.mobile.SmsCodeAuthenticationSecurityConfig;
 import com.whale.security.core.properties.SecurityConstants;
@@ -87,6 +88,9 @@ public class BrowserSecurityConfig extends AbstractChannelSecurityConfig {
                 .and()
             .sessionManagement()
                 .invalidSessionUrl("/session/invalid")
+                .maximumSessions(1)//为1 后面登录的session会把前面的登录的session失效掉
+                .expiredSessionStrategy(new MyExpiredSessionStrategy())//并发登录导致超时的处理策略
+                .and()
                 .and()
                 .authorizeRequests()
                 .antMatchers(
