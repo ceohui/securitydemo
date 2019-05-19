@@ -89,6 +89,7 @@ public class BrowserSecurityConfig extends AbstractChannelSecurityConfig {
             .sessionManagement()
                 .invalidSessionUrl("/session/invalid")
                 .maximumSessions(1)//为1 后面登录的session会把前面的登录的session失效掉
+                .maxSessionsPreventsLogin(true)//当session数量达到最大时 阻止后面的登录
                 .expiredSessionStrategy(new MyExpiredSessionStrategy())//并发登录导致超时的处理策略
                 .and()
                 .and()
