@@ -3,8 +3,6 @@
  */
 package com.whale.security.core.properties;
 
-import sun.security.util.SecurityConstants;
-
 /**
  * @author zhailiang
  *
@@ -16,6 +14,9 @@ public class  BrowserProperties {
 	private LoginType loginType = LoginType.JSON;
 
 	private int rememberMeSecodes = 3600;//秒 1小时
+
+	private SessionProperties session = new SessionProperties();
+
 
 	public String getLoginPage() {
 		return loginPage;
@@ -39,5 +40,13 @@ public class  BrowserProperties {
 
 	public void setRememberMeSecodes(int rememberMeSecodes) {
 		this.rememberMeSecodes = rememberMeSecodes;
+	}
+
+	public SessionProperties getSession() {
+		return session;
+	}
+
+	public void setSession(SessionProperties session) {
+		this.session = session;
 	}
 }

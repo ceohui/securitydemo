@@ -1,6 +1,5 @@
 package com.whale.security.browser;
 
-import com.whale.security.browser.session.MyExpiredSessionStrategy;
 import com.whale.security.core.authentication.AbstractChannelSecurityConfig;
 import com.whale.security.core.authentication.mobile.SmsCodeAuthenticationSecurityConfig;
 import com.whale.security.core.properties.SecurityConstants;
@@ -18,6 +17,8 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+import org.springframework.security.web.session.InvalidSessionStrategy;
+import org.springframework.security.web.session.SessionInformationExpiredStrategy;
 
 import javax.sql.DataSource;
 
@@ -53,6 +54,12 @@ public class BrowserSecurityConfig extends AbstractChannelSecurityConfig {
     @Autowired
     private ValidateCodeSecurityConfig validateCodeSecurityConfig;
 
+    @Autowired
+    private SessionInformationExpiredStrategy sessionInformationExpiredStrategy;
+
+    @Autowired
+    private InvalidSessionStrategy invalidSessionStrategy;
+
     @Bean
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();//也可以自定义 只要实现PasswordEncoder接口
@@ -87,10 +94,16 @@ public class BrowserSecurityConfig extends AbstractChannelSecurityConfig {
                 .userDetailsService(userDetailsService)
                 .and()
             .sessionManagement()
-                .invalidSessionUrl("/session/invalid")
-                .maximumSessions(1)//为1 后面登录的session会把前面的登录的session失效掉
-                .maxSessionsPreventsLogin(true)//当session数量达到最大时 阻止后面的登录
-                .expiredSessionStrategy(new MyExpiredSessionStrategy())//并发登录导致超时的处理策略
+
+                .invalidSessionStrategy(invalidSessionStrategy)
+                .maximumSessions(securityProperties.getBrowser().getSession().getMaximumSessions())
+                .maxSessionsPreventsLogin(securityProperties.getBrowser().getSession().isMaxSessionsPreventsLogin())
+                .expiredSessionStrategy(sessionInformationExpiredStrategy)
+
+//                .invalidSessionUrl("/session/invalid")
+//                .maximumSessions(1)//为1 后面登录的session会把前面的登录的session失效掉
+//                .maxSessionsPreventsLogin(true)//当session数量达到最大时 阻止后面的登录
+//                .expiredSessionStrategy(new MyExpiredSessionStrategy())//并发登录导致超时的处理策略
                 .and()
                 .and()
                 .authorizeRequests()
