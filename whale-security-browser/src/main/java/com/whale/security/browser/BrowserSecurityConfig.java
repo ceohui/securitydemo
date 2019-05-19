@@ -112,9 +112,9 @@ public class BrowserSecurityConfig extends AbstractChannelSecurityConfig {
                 .and()
             .logout()
                 .logoutUrl("/signOut")
-                .logoutSuccessUrl("/logOut.html")
+//                .logoutSuccessUrl("/logOut.html")
                 .logoutSuccessHandler(LogoutSuccessHandler) //Handler和Url是互斥的
-//                .deleteCookies("JESSIONID")//清除cookie中的 当前session id
+                .deleteCookies("JESSIONID")//清除cookie中的 当前session id
                 .and()
                 .authorizeRequests()
                 .antMatchers(
