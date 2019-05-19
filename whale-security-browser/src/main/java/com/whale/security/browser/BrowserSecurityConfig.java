@@ -15,6 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.session.InvalidSessionStrategy;
@@ -59,6 +60,9 @@ public class BrowserSecurityConfig extends AbstractChannelSecurityConfig {
 
     @Autowired
     private InvalidSessionStrategy invalidSessionStrategy;
+
+    @Autowired
+    private LogoutSuccessHandler LogoutSuccessHandler;
 
     @Bean
     public PasswordEncoder passwordEncoder(){
@@ -105,6 +109,12 @@ public class BrowserSecurityConfig extends AbstractChannelSecurityConfig {
 //                .maxSessionsPreventsLogin(true)//当session数量达到最大时 阻止后面的登录
 //                .expiredSessionStrategy(new MyExpiredSessionStrategy())//并发登录导致超时的处理策略
                 .and()
+                .and()
+            .logout()
+                .logoutUrl("/signOut")
+                .logoutSuccessUrl("/logOut.html")
+                .logoutSuccessHandler(LogoutSuccessHandler) //Handler和Url是互斥的
+//                .deleteCookies("JESSIONID")//清除cookie中的 当前session id
                 .and()
                 .authorizeRequests()
                 .antMatchers(

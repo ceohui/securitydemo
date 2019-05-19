@@ -11,6 +11,10 @@ public class  BrowserProperties {
 
 	private String loginPage = "/signIn.html";
 
+	private String signUpUrl = "/signUp.html";
+
+	private String signOutUrl;
+
 	private LoginType loginType = LoginType.JSON;
 
 	private int rememberMeSecodes = 3600;//秒 1小时
@@ -48,5 +52,21 @@ public class  BrowserProperties {
 
 	public void setSession(SessionProperties session) {
 		this.session = session;
+	}
+
+	public String getSignOutUrl() {
+		return signOutUrl;
+	}
+
+	public void setSignOutUrl(String signOutUrl) {
+		this.signOutUrl = signOutUrl;
+	}
+
+	public String getSignUpUrl() {
+		return signUpUrl;
+	}
+
+	public void setSignUpUrl(String signUpUrl) {
+		this.signUpUrl = signUpUrl;
 	}
 }
