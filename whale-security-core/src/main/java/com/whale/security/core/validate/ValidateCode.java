@@ -1,6 +1,6 @@
 package com.whale.security.core.validate;
 
-import java.awt.image.BufferedImage;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
@@ -10,7 +10,9 @@ import java.time.LocalDateTime;
  * @Description: TODO
  * @date 2019/5/6 0006 22:53
  */
-public class ValidateCode {
+public class ValidateCode implements Serializable {
+
+    private static final long serialVersionUID = 8034622715879768631L;
     /**
      * 一个图片验证码包含三个信息
      */
