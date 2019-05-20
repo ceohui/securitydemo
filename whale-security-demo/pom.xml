@@ -13,9 +13,15 @@
     <packaging>jar</packaging>
 
     <dependencies>
+        <!--<dependency>-->
+            <!--<groupId>com.whale.security</groupId>-->
+            <!--<artifactId>whale-security-browser</artifactId>-->
+            <!--<version>${whale.security.version}</version>-->
+        <!--</dependency>-->
+
         <dependency>
             <groupId>com.whale.security</groupId>
-            <artifactId>whale-security-browser</artifactId>
+            <artifactId>whale-security-app</artifactId>
             <version>${whale.security.version}</version>
         </dependency>
 

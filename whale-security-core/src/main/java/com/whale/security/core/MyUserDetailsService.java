@@ -1,4 +1,4 @@
-package com.whale.security.browser;
+package com.whale.security.core;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +27,7 @@ public class MyUserDetailsService implements UserDetailsService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Override
     public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
         //根据用户名从数据库查找用户信息
         logger.info("登录用户名"+ userName);
